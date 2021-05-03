@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import colors from "../styles/colors";
 import userImg from "../assets/profile.png";
 import fonts from "../styles/fonts";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export function Header() {
+  const [userName, setUserName] = useState<string>();
+
+  useEffect(() => {
+    async function loadStorageUserName() {
+      const name = await AsyncStorage.getItem("@plantmanager:user");
+      setUserName(name || "");
+    }
+
+    loadStorageUserName();
+  }, [userName]);
+
   return (
     <View style={styles.container}>
       <View>
         <Text style={styles.greeting}>Olá,</Text>
-        <Text style={styles.userName}>Vinicius</Text>
+        <Text style={styles.userName}>{userName}</Text>
       </View>
 
       <Image source={userImg} style={styles.image}></Image>
@@ -40,6 +53,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontFamily: fonts.heading,
     color: colors.heading,
-    lineHeight: 40
+    lineHeight: 40,
   },
 });
